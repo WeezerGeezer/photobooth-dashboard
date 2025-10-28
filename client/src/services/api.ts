@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Booth, HealthCheck } from '../types/booth';
 import { mockBooths, generateMockBooths } from './mockData';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
-const USE_MOCK_DATA = process.env.REACT_APP_USE_MOCK_DATA !== 'false';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA !== 'false';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
