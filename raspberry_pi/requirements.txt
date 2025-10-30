@@ -1,19 +1,19 @@
-# Photobooth Raspberry Pi Requirements
+# Canon Rebel Photo Booth - Raspberry Pi Requirements
 
 # Image Processing
 Pillow==10.0.0
 numpy==1.24.3
 
-# Serial/Bluetooth Communication
-pyserial==3.5
+# HTTP Client
+requests==2.31.0
 
 # CUPS Printer Support (optional, installed via system package)
 # pycups (usually pre-installed on Raspberry Pi OS)
 
 # System utilities (install via apt)
-# picamera: sudo apt install python3-picamera
+# gphoto2: sudo apt install gphoto2 libgphoto2-6
 # cups: sudo apt install cups
+# imagemagick: sudo apt install imagemagick (for RAW conversion)
 
-# Optional: for web dashboard integration
-requests==2.31.0
+# Optional: for dashboard integration
 python-socketio==5.9.0

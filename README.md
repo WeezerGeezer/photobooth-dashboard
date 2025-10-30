@@ -1,242 +1,339 @@
-# Photobooth Dashboard
+# Canon Rebel Photo Booth Dashboard
 
-A complete photobooth system with automated image capture, processing, and printing. The system integrates:
-- **Arduino controller** for button input and camera/flash triggering
-- **Raspberry Pi processor** for image capture and B&W conversion
-- **Photo printer** for 4x6 prints
-- **Centralized dashboard** for monitoring and analytics
+A complete photo booth system using a **Canon EOS Rebel DSLR camera** with automated image processing and printing. Includes:
+- **Arduino Mega 2560** controller with USB Host Shield for Canon camera control
+- **Raspberry Pi** for image processing and thermal printer management
+- **Canon EOS Rebel DSLR** for professional-quality photos
+- **Centralized Dashboard** for monitoring and analytics
 
 ## System Components
 
 ### Hardware
-- **Arduino Mega 2560**: Button detection, camera & flash triggering, status feedback
-- **Raspberry Pi 4**: Image capture, processing, printing, dashboard integration
-- **HC-05 Bluetooth Module**: Wireless Arduino-Pi communication
-- **PiCamera2 Module**: High-resolution image capture
-- **USB Photo Printer**: 4x6 thermal or inkjet printing
-- **LED & Relays**: Flash and camera shutter control
+
+**Camera System:**
+- **Canon EOS Rebel T6i/T7i/T8i** (or compatible EOS Rebel model)
+- **Arduino Mega 2560** with USB Host Shield 2.0
+- **USB-A to Mini-B cable** (Canon connection)
+
+**Printing System:**
+- **Raspberry Pi 4** (2GB+ RAM recommended)
+- **Shinko Sinfonia CS2** or similar dye-sublimation printer
+- **CUPS** (Common Unix Printing System) for printer control
+
+**Lighting & Control:**
+- **Neewer Ring Light 14"** (LED, 5500K)
+- **PC817 Optocouplers** (lighting isolation)
+- **Relay Module** (5V, 2-4 channel)
+- **Momentary Push Button** (60mm arcade button)
+- **Status LED** with 220Ω resistor
+
+**Structure:**
+- **PVC pipe frame** for booth construction
+- **Seamless backdrop** (5x7ft)
+- **Black fabric** for booth walls/light control
 
 ### Software
-- **Arduino Firmware** (`photobooth_controller.ino`): Hardware control logic
-- **Python Application** (`photobooth_main.py`): Image processing pipeline
-- **Dashboard Integration**: Session logging and metrics reporting
-- **Node.js/React Dashboard**: Central monitoring and analytics
+
+**Arduino:**
+- `arduino/canon_rebel_controller.ino` - Full Canon camera control via USB Host Shield + PTP protocol
+
+**Raspberry Pi:**
+- `raspberry_pi/canon_image_processor.py` - Download, process, and print Canon photos
+- `raspberry_pi/photobooth.service` - Systemd service for auto-startup
+
+**Dashboard:**
+- Node.js/Express backend with REST API
+- React frontend with real-time monitoring
+- PostgreSQL database for session logging
 
 ## Features
 
-### Booth Operations
+### Photo Capture
+- **Professional DSLR Quality**: 24.2MP Canon sensor
 - **One-Button Operation**: Simple user trigger with 3-second countdown
-- **4-Photo Sequence**: Automatic capture with flash every 1.5 seconds
-- **Image Processing**: Automatic B&W conversion with contrast enhancement
-- **Instant Printing**: 4-photo strip printed in real-time (15-30 seconds)
-- **Status Feedback**: LED indicators for all operational states
+- **4-Photo Sequence**: Automatic capture every 1.5 seconds
+- **Professional Lighting**: Ring light + adjustable strobe
+- **Full Camera Control**: ISO, aperture, shutter speed adjustable via Arduino
+
+### Image Processing
+- **Automatic B&W Conversion**: Grayscale rendering from color RAW/JPG
+- **Smart Contrast Enhancement**: 1.4x boost for professional appearance
+- **Shadow Lifting**: Subtle enhancement for natural look
+- **Automatic Resizing**: Optimized for 4x6 print format
+- **Quality Settings**: 95% JPEG quality preserves detail
+
+### Printing
+- **Instant Printing**: 4-photo strip on 4x6 thermal paper
+- **Professional Output**: 300 DPI dye-sublimation or thermal printing
+- **Print Time**: 15-30 seconds per session
+- **CUPS Integration**: Direct printer control from Raspberry Pi
 
 ### Monitoring & Analytics
-- **Real-time Booth Status**: Online/offline detection with health metrics
-- **Session Logging**: Complete history of captures and prints
-- **Performance Metrics**: Temperature, storage, signal strength tracking
-- **Error Tracking**: Automatic error detection and logging
-- **Historical Data**: 7-day trend charts and statistics
+- **Real-time Status**: Live booth availability and system health
+- **Session Logging**: Complete history with timestamps
+- **Performance Tracking**: Camera connection, print success rates
+- **Error Alerts**: Automatic notification of system issues
+- **Historical Analytics**: 7-day trends and statistics
 
 ## Project Structure
 
 ```
 booth-dashboard/
 ├── arduino/
-│   └── photobooth_controller.ino    # Arduino Mega firmware
+│   ├── canon_rebel_controller.ino    # Canon camera + lighting control
+│   └── README.md                     # Detailed Arduino documentation
+├── arduino-controller/               # Research & BOM (from mobile branch)
+│   ├── bill-of-materials.md         # Hardware requirements & pricing
+│   ├── computing-platform-comparison.md
+│   ├── image-transfer-architecture.md
+│   ├── materials-research.md
+│   └── README.md                    # Complete technical guide
 ├── raspberry_pi/
-│   ├── photobooth_main.py           # Main Python application
-│   ├── dashboard_integration.py      # Dashboard client library
+│   ├── canon_image_processor.py      # Photo download & processing
 │   ├── photobooth.service           # Systemd service file
 │   └── requirements.txt             # Python dependencies
-├── server/                          # Backend Node.js/Express
+├── server/                          # Node.js/Express backend
 │   ├── src/
-│   │   ├── api/                    # REST API endpoints
-│   │   ├── config/                 # Database configuration
-│   │   ├── types/                  # TypeScript interfaces
-│   │   └── index.ts                # Express server
+│   │   ├── api/
+│   │   ├── config/
+│   │   ├── types/
+│   │   └── index.ts
 │   └── package.json
-├── client/                          # React frontend dashboard
+├── client/                          # React dashboard UI
 │   ├── src/
-│   │   ├── components/             # React components
-│   │   ├── pages/                  # Page components
-│   │   ├── services/               # API clients
-│   │   ├── hooks/                  # Custom hooks
-│   │   └── types/                  # TypeScript types
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── hooks/
 │   └── package.json
-├── QUICK_START_HARDWARE.md          # Hardware quick start (30 min)
-├── ARDUINO_SETUP.md                 # Arduino detailed setup
-├── RASPBERRYPI_SETUP.md             # Raspberry Pi detailed setup
-├── SYSTEM_ARCHITECTURE.md           # Complete system design
-├── TESTING_AND_DEPLOYMENT.md        # Testing procedures
+├── ARDUINO_SETUP.md                 # Arduino & USB Host Shield guide
+├── RASPBERRYPI_SETUP.md             # Raspberry Pi setup guide
+├── CANON_WORKFLOW.md                # Complete photo workflow
+├── SYSTEM_ARCHITECTURE.md           # System design overview
+├── TESTING_AND_DEPLOYMENT.md        # Testing & deployment guide
 └── README.md                        # This file
 ```
 
 ## Quick Start
 
-### 30-Minute Hardware Setup
-
-For the fastest path to a working system:
-
-```bash
-# See QUICK_START_HARDWARE.md for step-by-step instructions
-# Takes about 30 minutes total to get first print
-```
-
 ### Prerequisites
-- **Hardware**:
-  - Arduino Mega 2560 with USB cable
-  - Raspberry Pi 4 (2GB+ RAM) with power supply
-  - PiCamera2 module
-  - HC-05 Bluetooth module
-  - USB photo printer (4x6 capable)
-  - Button, LED, relays, wiring
 
-- **Software**:
-  - Arduino IDE
-  - Raspberry Pi OS 64-bit
-  - Node.js 18+ (for dashboard server)
-  - PostgreSQL 12+ (for dashboard)
+**Hardware:**
+- Canon EOS Rebel T6i/T7i/T8i or compatible
+- Arduino Mega 2560
+- USB Host Shield 2.0
+- Raspberry Pi 4 (2GB+ RAM)
+- Shinko Sinfonia CS2 or compatible dye-sub printer
+- Supporting components (relays, buttons, LEDs, PVC frame)
 
-### Booth Hardware Setup (30 minutes)
+**Software:**
+- Arduino IDE (for firmware upload)
+- Raspberry Pi OS 64-bit
+- Node.js 18+ (dashboard server)
+- PostgreSQL 12+ (dashboard database)
 
-```bash
-# 1. Flash Arduino with photobooth_controller.ino
-#    (Use Arduino IDE, select Arduino Mega 2560)
+### Setup Steps (1-2 Hours)
 
-# 2. Setup Raspberry Pi
-ssh pi@raspberrypi.local
-cd ~
-git clone https://github.com/WeezerGeezer/photobooth-dashboard.git
-cd photobooth-dashboard
-python3 -m venv venv
-source venv/bin/activate
-pip install -r raspberry_pi/requirements.txt
+1. **Assemble Hardware**
+   - Mount Canon on tripod at booth location
+   - Connect Arduino Mega + USB Host Shield
+   - Wire button, LED, relays per Arduino schematic
+   - Connect ring light and strobe to optocouplers
+   - Install Raspberry Pi near booth
+   - Connect Shinko printer via USB
 
-# 3. Connect Bluetooth
-sudo bluetoothctl
-# pair [HC-05_MAC], trust, connect
+2. **Flash Arduino**
+   ```bash
+   # Open Arduino IDE
+   # Select: Tools → Board → Arduino Mega 2560
+   # Open: arduino/canon_rebel_controller.ino
+   # Click Upload
+   ```
 
-# 4. Configure printer
-sudo systemctl start cups
-# Add printer via http://raspberrypi.local:631
+3. **Setup Raspberry Pi**
+   ```bash
+   ssh pi@raspberrypi.local
+   cd ~
+   git clone https://github.com/WeezerGeezer/photobooth-dashboard.git
+   cd photobooth-dashboard
 
-# 5. Wire up button, LED, camera, flash
-# See ARDUINO_SETUP.md for detailed wiring diagram
+   # Install dependencies
+   sudo apt install gphoto2 libgphoto2-6 cups imagemagick
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r raspberry_pi/requirements.txt
 
-# 6. Test
-python3 raspberry_pi/photobooth_main.py
-```
+   # Start image processor
+   python3 raspberry_pi/canon_image_processor.py
+   ```
 
-### Dashboard Server Setup
+4. **Setup Dashboard Server**
+   ```bash
+   cd server
+   npm install
+   npm run dev
+   ```
 
-```bash
-# Backend
-cd server
-npm install
-cp .env.example .env
-npm run dev
-
-# Frontend (in another terminal)
-cd client
-npm install
-npm start
-```
+5. **Configure Printer**
+   ```bash
+   # Via web interface: http://raspberrypi.local:631
+   # OR command line:
+   lpstat -p
+   lpadmin -p PhotBoothPrinter -E -v usb://... -m everywhere
+   lp -d PhotBoothPrinter /tmp/test.jpg  # test print
+   ```
 
 ## Complete Workflow
 
-### User Flow (60 seconds start-to-finish)
-
-1. **Payment** → User makes payment (payment system integration)
-2. **Button Press** → Initiates 3-second countdown with LED feedback
-3. **Photo Capture** → 4 automatic photos with flash (6 seconds)
-4. **Processing** → B&W conversion, contrast enhancement (10 seconds)
-5. **Printing** → 4-photo strip prints (15-30 seconds)
-6. **Complete** → System returns to ready state for next customer
-
-### Data Flow
+### User Experience (60 seconds total)
 
 ```
-Button Press
+Payment → Button Press → 3-Second Countdown
     ↓
-Arduino → Bluetooth → Raspberry Pi
+Ring Light Activates → 4 Photos Captured (6 seconds)
     ↓
-Camera Capture × 4
+Photos Downloaded from Canon → B&W Processing
     ↓
-Image Processing (B&W, contrast, resize)
+Photostrip Layout Created (600×800 px)
     ↓
-Photostrip Layout (600×800 pixels)
+Print Job Sent to Printer → Physical 4×6 Print
     ↓
-CUPS Print Queue
-    ↓
-USB Printer → Physical 4×6 Print
-    ↓
-Session Data → Dashboard Server
-    ↓
-Stored in PostgreSQL + Displayed in UI
+Session Logged to Dashboard → Ready for Next Customer
 ```
+
+### Technical Flow
+
+```
+Canon EOS Rebel (USB)
+    ↓ (PTP Protocol via USB Host Shield)
+Arduino Mega 2560
+    ↓ (Serial over USB at 115200 baud)
+Raspberry Pi 4
+    ↓ (gPhoto2 commands)
+Download RAW/JPG photos from camera
+    ↓
+PIL image processing:
+  - Convert to grayscale
+  - Enhance contrast (1.4x)
+  - Lift shadows for natural look
+  - Resize to 280×280px
+    ↓
+Layout photostrip (600×800 px)
+    ↓
+Send to CUPS printer queue
+    ↓
+Shinko printer outputs physical 4×6 print
+    ↓
+Log session to dashboard database
+```
+
+## Hardware Pricing
+
+### Budget Build (~$2,500)
+- Canon T6i (used): $400
+- Arduino + USB Host: $40
+- Ring Light: $40
+- Shinko Sinfonia CS2: $1,000
+- Raspberry Pi 4: $75
+- PVC frame + fabric: $150
+- Misc (relays, buttons, cables): $75
+
+### Standard Build (~$3,500)
+- Canon T8i (new): $750
+- Arduino + USB Host: $50
+- Professional lighting: $200
+- Shinko Sinfonia CS2: $1,200
+- Raspberry Pi 4 (4GB): $100
+- Professional booth frame: $300
+- Misc components: $100
+
+See `arduino-controller/bill-of-materials.md` for detailed component lists.
 
 ## Documentation
 
-- **[QUICK_START_HARDWARE.md](./QUICK_START_HARDWARE.md)** - 30-minute setup guide
-- **[ARDUINO_SETUP.md](./ARDUINO_SETUP.md)** - Complete Arduino configuration
-- **[RASPBERRYPI_SETUP.md](./RASPBERRYPI_SETUP.md)** - Complete Raspberry Pi setup
-- **[SYSTEM_ARCHITECTURE.md](./SYSTEM_ARCHITECTURE.md)** - Detailed system design & workflows
-- **[TESTING_AND_DEPLOYMENT.md](./TESTING_AND_DEPLOYMENT.md)** - Testing procedures & deployment
-- **[PRD.md](./PRD.md)** - Product Requirements Document
-- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Current implementation status
+- **[ARDUINO_SETUP.md](./ARDUINO_SETUP.md)** - Complete Arduino & USB Host Shield configuration
+- **[RASPBERRYPI_SETUP.md](./RASPBERRYPI_SETUP.md)** - Raspberry Pi installation & setup
+- **[CANON_WORKFLOW.md](./CANON_WORKFLOW.md)** - End-to-end Canon photo workflow
+- **[SYSTEM_ARCHITECTURE.md](./SYSTEM_ARCHITECTURE.md)** - Detailed system design
+- **[TESTING_AND_DEPLOYMENT.md](./TESTING_AND_DEPLOYMENT.md)** - Testing procedures
+- **[arduino-controller/README.md](./arduino-controller/README.md)** - Comprehensive Arduino guide
+- **[arduino-controller/bill-of-materials.md](./arduino-controller/bill-of-materials.md)** - Hardware BOM & pricing
 
-## API Documentation
+## Performance Metrics
 
-See server documentation for complete API endpoint specifications.
+| Component | Specification | Notes |
+|-----------|---------------|-------|
+| **Camera** | Canon EOS Rebel T6i | 24.2MP, Full auto/manual control |
+| **Resolution** | 5472×3648 (RAW) | Downsampled for 4×6 printing |
+| **Photo Interval** | 1.5 seconds | Adjustable via Arduino |
+| **Processing Time** | 8-12 seconds | B&W conversion + layout |
+| **Print Time** | 15-30 seconds | Dye-sub printer speed |
+| **Total Session** | 50-70 seconds | Button press to printed photo |
+| **Memory Card** | SD/SDHC 32GB+ | Camera storage for 500+ photos |
+| **Print Capacity** | 200 prints/media | Per Shinko media kit |
 
-## File Organization
+## Key Advantages Over PiCamera
 
-### Arduino Files
-- `arduino/photobooth_controller.ino` - Complete Arduino firmware with all hardware control logic
+✅ **Professional Quality**: 24.2MP Canon DSLR vs. 12MP PiCamera
+✅ **Full Manual Control**: ISO, aperture, shutter speed adjustment
+✅ **Reliable Performance**: Proven DSLR technology vs. experimental camera module
+✅ **Better Optics**: Canon L-series lenses available
+✅ **Established Ecosystem**: Extensive support and accessories
+✅ **Cost Effective**: Used Canon bodies available at $300-500
+✅ **Professional Output**: Dye-sublimation prints with DSLR quality
 
-### Raspberry Pi Files
-- `raspberry_pi/photobooth_main.py` - Main application handling capture, processing, and printing
-- `raspberry_pi/dashboard_integration.py` - Client library for dashboard communication
-- `raspberry_pi/photobooth.service` - Systemd service for auto-startup
-- `raspberry_pi/requirements.txt` - Python dependencies
+## System Requirements
 
-## Performance Characteristics
+### Arduino
+- **Board**: Arduino Mega 2560
+- **Shield**: USB Host Shield 2.0
+- **Libraries**: USB Host Library, Canon EOS PTP Library
+- **Power**: 5V 2A minimum
 
-| Operation | Time | Notes |
-|-----------|------|-------|
-| Countdown | 3s | LED feedback, user anticipation |
-| 4-Photo Capture | 6s | 1.5s intervals with flash |
-| Image Processing | 8-12s | B&W conversion + enhancement |
-| Photostrip Layout | 2-3s | Assembly of 4 photos |
-| Print Job | 15-30s | Depends on printer type |
-| **Total Session** | ~50-60s | From button press to printed photo |
+### Raspberry Pi
+- **Model**: Raspberry Pi 4 (2GB+ RAM)
+- **OS**: Raspberry Pi OS 64-bit
+- **Storage**: 32GB microSD + optional SSD
+- **Power**: 5V 3A USB-C
 
-## System Monitoring
-
-Monitor booth status via the React dashboard:
-- Real-time online/offline status
-- Session history and statistics
-- Health metrics (temperature, storage, signal)
-- Error logs and alerts
-- 7-day trend charts
-
-## Contributing
-
-Follow the commit message convention: `type(scope): description`
-
-Examples:
-- `feat(arduino): add emergency stop button`
-- `fix(pi): correct image contrast calculation`
-- `docs(setup): update Bluetooth pairing steps`
+### Printer
+- **Type**: Dye-sublimation (Shinko, Fujifilm, etc.)
+- **Interface**: USB
+- **Media**: 4×6 photo paper
+- **Capacity**: 200+ prints per media kit
 
 ## Troubleshooting
 
-For detailed troubleshooting, see the documentation files:
-- Arduino issues: See [ARDUINO_SETUP.md](./ARDUINO_SETUP.md)
-- Raspberry Pi issues: See [RASPBERRYPI_SETUP.md](./RASPBERRYPI_SETUP.md)
-- Deployment issues: See [TESTING_AND_DEPLOYMENT.md](./TESTING_AND_DEPLOYMENT.md)
-- System issues: See [SYSTEM_ARCHITECTURE.md](./SYSTEM_ARCHITECTURE.md)
+**Arduino can't detect camera:**
+- Verify USB cable is properly connected
+- Check Arduino IDE serial monitor for USB errors
+- Ensure Canon is in "PC Connection" mode
+- Try different USB cable or port
+
+**Photos not downloading:**
+- Run `gphoto2 --list-files` to verify camera connection
+- Check Raspberry Pi has write permissions to `/home/pi/photobooth/`
+- Verify gPhoto2 is installed: `which gphoto2`
+
+**Printer not printing:**
+- Test with: `lp /tmp/test.jpg`
+- Check CUPS status: `lpstat -p`
+- Verify print queue: `lpq`
+
+**Photos look too dark:**
+- Adjust `FLASH_BRIGHTNESS` and `SHADOW_LIFT` in `canon_image_processor.py`
+- Increase Canon shutter speed or ISO
+
+See documentation files for detailed troubleshooting guides.
+
+## Contributing
+
+Follow commit message convention: `type(scope): description`
+
+Examples:
+- `feat(arduino): add ISO override function`
+- `fix(pi): correct shadow lift calculation`
+- `docs(setup): update Canon pairing instructions`
 
 ## License
 
@@ -245,6 +342,6 @@ MIT
 ## Support
 
 For issues or questions:
-1. Check the relevant documentation file above
-2. Review the comprehensive guides in SYSTEM_ARCHITECTURE.md
-3. Consult TESTING_AND_DEPLOYMENT.md for testing procedures
+1. Check relevant documentation file above
+2. Review `arduino-controller/README.md` for detailed technical info
+3. See TESTING_AND_DEPLOYMENT.md for debugging procedures
