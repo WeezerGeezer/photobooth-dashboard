@@ -34,8 +34,16 @@ A complete photo booth system using a **Canon EOS Rebel DSLR camera** with autom
 
 ### Software
 
-**Arduino:**
-- `arduino/canon_rebel_controller.ino` - Full Canon camera control via USB Host Shield + PTP protocol
+**Arduino (Two Versions):**
+- **Prototype**: `arduino/uno_r3_prototype/canon_rebel_uno_r3.ino` - Arduino Uno R3 for testing/validation
+  - Low cost (~$35)
+  - Perfect for prototyping
+  - All core features included
+- **Production**: `arduino/canon_rebel_controller.ino` - Arduino Mega 2560 for commercial builds
+  - Professional reliability
+  - Extra GPIO for sensors/features
+  - Plenty of memory for expansion
+- **Migration Guide**: `arduino/UPGRADE_UNO_TO_MEGA.md` - How to upgrade from Uno R3 to Mega 2560
 
 **Raspberry Pi:**
 - `raspberry_pi/canon_image_processor.py` - Download, process, and print Canon photos
@@ -116,11 +124,25 @@ booth-dashboard/
 
 ## Quick Start
 
+### Arduino Selection
+
+**For Prototyping**: Use **Arduino Uno R3** (~$35)
+- Start with this for testing and validation
+- Lower cost, faster to set up
+- Perfect for learning the system
+- See: `arduino/uno_r3_prototype/`
+
+**For Production**: Upgrade to **Arduino Mega 2560** (~$55)
+- More GPIO and memory
+- Extra serial ports for sensors
+- Professional reliability
+- See: `arduino/UPGRADE_UNO_TO_MEGA.md` for migration guide
+
 ### Prerequisites
 
 **Hardware:**
 - Canon EOS Rebel T6i/T7i/T8i or compatible
-- Arduino Mega 2560
+- Arduino Uno R3 (for prototype) OR Mega 2560 (for production)
 - USB Host Shield 2.0
 - Raspberry Pi 4 (2GB+ RAM)
 - Shinko Sinfonia CS2 or compatible dye-sub printer
@@ -145,8 +167,15 @@ booth-dashboard/
 2. **Flash Arduino**
    ```bash
    # Open Arduino IDE
+
+   # For PROTOTYPE (Uno R3):
+   # Select: Tools → Board → Arduino Uno
+   # Open: arduino/uno_r3_prototype/canon_rebel_uno_r3.ino
+
+   # For PRODUCTION (Mega 2560):
    # Select: Tools → Board → Arduino Mega 2560
    # Open: arduino/canon_rebel_controller.ino
+
    # Click Upload
    ```
 
