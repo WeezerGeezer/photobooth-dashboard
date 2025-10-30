@@ -1,0 +1,49 @@
+[Unit]
+Description=Photobooth Application - Image Capture and Printing
+Documentation=file:///home/pi/photobooth/RASPBERRYPI_SETUP.md
+After=network-online.target bluetooth.target
+Wants=network-online.target
+BindsTo=bluetooth.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/photobooth
+
+# Activate virtual environment and run application
+ExecStart=/bin/bash -c 'source /home/pi/photobooth/venv/bin/activate && exec python3 /home/pi/photobooth/raspberry_pi/photobooth_main.py'
+
+# Auto-restart on failure
+Restart=always
+RestartSec=10
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=photobooth
+
+# Timeout settings
+TimeoutStartSec=30
+TimeoutStopSec=10
+
+# Security and resource limits
+CPUQuota=75%
+MemoryLimit=512M
+MemoryAccounting=yes
+TasksMax=50
+
+# Working directory permissions
+RuntimeDirectory=photobooth
+RuntimeDirectoryMode=0755
+
+# Device access
+PrivateDevices=no
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/home/pi/photobooth /dev/rfcomm0 /run/cups
+
+[Install]
+WantedBy=multi-user.target
